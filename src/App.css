@@ -1,0 +1,47 @@
+.blu {
+  color: #369;
+  text-decoration: underline;
+  cursor:pointer;
+}
+
+.norma {
+  color: #222;
+  font-weight:normal;
+}
+
+.abierto {
+  display:block;
+}
+
+.cerrado {
+  display:none;
+}
+
+.btnClass {
+margin:10px auto;
+padding:3px;
+}
+@font-face {
+
+src: url('/fonts/fontawesome-webfont.woff2') format('woff2'),
+     url('/fonts/fontawesome-webfont.woff') format('woff'),
+     url('/fonts/fontawesome-webfont.ttf') format('ttf');
+font-weight: normal;
+font-style: normal;
+}
+
+.outer {
+display:table;
+background-color:#fed; 
+margin:0 auto;
+width:50%; 
+margin-top:15%;
+}
+
+.inner {
+width:50%; 
+text-align:center; 
+height:240px;
+display:table-cell; 
+vertical-align:middle;
+}
