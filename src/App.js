@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 class App extends React.Component {
 
   componentDidMount() {
-    fetch('https://tennismatchmachine.com/cgi/genc/tmm_api.pl')
+    fetch('/cgi/genc/tmm_api.pl')
       .then(response => response.json())
       .then(json => {
         this.props.dispatch({

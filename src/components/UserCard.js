@@ -1,10 +1,13 @@
-// no hooks
-///////////////////
 import React, {Component} from 'react';
 import CountUp from 'react-countup';
 import VisibilitySensor from 'react-visibility-sensor';
 import Link from '@material-ui/core/Link';
 import store from '../store';
+import UserMatches from './UserMatches';
+import axios from 'axios';
+import { connect } from 'react-redux'
+import ImageFadeIn from 'react-image-fade-in';
+//import spinner from '../loading_spinner.gif'
 
 const style = {
   countup: {},
@@ -16,13 +19,29 @@ class UserCard extends Component {
     super(props);
     this.state = {
       isHovered : false,
-      didViewCountUp: false
+      didViewCountUp: false,
+      loading:false
     };
     this.toggleHover = this.toggleHover.bind(this);
   }
   toggleHover(){
     this.setState(prevState => ({isHovered: !prevState.isHovered}));
   }
+
+  async getUserMatches(uname) {this.setState(prevState => ({loading: !prevState.loading}));
+	await axios.get('/cgi/genc/tmm_api.pl?type=matches&name='+uname, {withCredentials: true}, {responseType: 'json'})
+            .then(response => { var matches = response.data; matches["player"]=uname;
+		this.props.dispatch({
+          		type: 'CHECK_AUTH',
+          		payload: matches === 'U' ? false : true
+        	});this.setState(prevState => ({loading: !prevState.loading}));
+		this.props.parentCallback(<UserMatches matches={ matches }/>);
+            })
+            .catch(function (error){
+                console.log(error);
+            })
+    
+  } 
 
 componentDidMount () {
 
@@ -44,7 +63,7 @@ componentDidMount () {
   }
   
   render(){
-    //const btnClass = this.state.isHovered ? 'blu' : 'norma';
+
     const o_sebe = this.props.obj.o_sebe === 'g_url' | this.props.obj.o_sebe === '' ? '-/-' : this.props.obj.o_sebe;
     const raquet = this.props.obj.raquet === '' ? '-/-' : this.props.obj.raquet;
     const email = this.props.obj.email === '' ? '-/-' : this.props.obj.email;
@@ -61,16 +80,20 @@ componentDidMount () {
   
     if (store.getState().auth) {
     return (
-    <div>
+
+    <div className={this.state.loading === false ? '' : 'loading'} >
+    <div className={this.state.loading === false ? 'hide' : 'show'} style={{ textAlign: 'center', color:'#369' }}>
+   	<h4>..загрузка..</h4>
+    </div>
            	<div className="container">
            		<div className="banner_inner d-flex align-items-center">
 					<div className="banner_content">
 						<div className="media">
-							<div className="d-flex">
-								<img height='440' src={this.props.obj.phurl} alt='' style={{marginRight:'30px'}}/>
+							<div className="d-flex" style={{minWidth:'360px'}}>
+								 <ImageFadeIn opacityTransition={0.3} height='440' src={this.props.obj.phurl} alt='' style={{marginRight:'30px'}}/>
 							</div>
 							<div className="media-body">
-								<div className="personal_text" style={{margin:'20px 20px 20px 0px', textAlign:'left'}}>
+								<div className="personal_text" style={{margin:'20px 20px 20px 0px', textAlign:'left', float:'right'}}>
 									<h6>В клубе с {this.props.obj.since} г.</h6>
 									<h3>{this.props.obj.name}</h3>
 									<h4>{real_name}</h4>
@@ -106,7 +129,7 @@ componentDidMount () {
 						
         					<div className="row">
         						<div className="col-md-4">
-        							<div className="wel_item">
+        							<div className="wel_item" onClick={(e) => this.getUserMatches(this.props.obj.name,e)} style={{cursor:'pointer'}}>
         								<i className="lnr lnr-database"></i>
         								<h4>{this.props.obj.num_matches}</h4>
         								<p>матчей</p>
@@ -207,206 +230,17 @@ componentDidMount () {
   } //render
 }; //class
 
-///////////////////
-export default UserCard;
+const mapStateToProps = state => {
+  return {auth: state.auth}
+}
 
-/*
-    return (
-    
-       <div style={{width: '100%', height: '260px', border: '0px solid blue'}}>
-          <div style={{width: '48%', float: 'left'}}>
-             <div className={btnClass} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} style={{minWidth: '240px', minHeight: '30px'}}>{this.props.obj.name}</div>
-             <div className={btnClass} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} style={{minWidth: '240px', minHeight: '30px'}}>{this.props.obj.raquet}</div>
-             <div className={btnClass} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} style={{minWidth: '240px', minHeight: '30px'}}>{this.props.obj.level}</div>
-          </div>
-          <div style={{width: '48%', float: 'right', border: '0px solid red'}}>
-             <div style={{width: '48%', position: 'absolute'}}><img width='144' src={this.props.obj.phurl} alt='profile' /></div>
-          </div>
-          <div style={{clear:'both'}} />
-       </div>
-    );
-*/
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch
+  }
+}
 
-/*
-    return (
-    <div>
-    <section className="hero-section">
-        <div className="container">
-            <div className="row">
-                <div className="col-lg-6">
-                    <div className="hero-text">
-                        <h1>Sona A Luxury Hotel</h1>
-                        <p>Here are the best hotel booking sites, including recommendations for international
-                            travel and for finding low-priced hotel rooms.</p>
-                        <a href="#" className="primary-btn">Discover Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div className="hero-slider owl-carousel">
-            <div className="hs-item set-bg" data-setbg="img/hero/hero-1.jpg"></div>
-            <div className="hs-item set-bg" data-setbg="img/hero/hero-2.jpg"></div>
-            <div className="hs-item set-bg" data-setbg="img/hero/hero-3.jpg"></div>
-        </div>
-    </section>
-    <section className="aboutus-section spad">
-        <div className="container">
-            <div className="row">
-                <div className="col-lg-6">
-                    <div className="about-text">
-                        <div className="section-title">
-                            <span>About Us</span>
-                            <h2>Intercontinental LA <br />Westlake Hotel</h2>
-                        </div>
-                        <p className="f-para">Sona.com is a leading online accommodation site. We’re passionate about
-                            travel. Every day, we inspire and reach millions of travelers across 90 local websites in 41
-                            languages.</p>
-                        <p className="s-para">So when it comes to booking the perfect hotel, vacation rental, resort,
-                            apartment, guest house, or tree house, we’ve got you covered.</p>
-                        <a href="#" className="primary-btn about-btn">Read More</a>
-                    </div>
-                </div>
-                <div className="col-lg-6">
-                    <div className="about-pic">
-                        <div className="row">
-                            <div className="col-sm-6">
-                                <img src="img/about/about-1.jpg" alt="" />
-                            </div>
-                            <div className="col-sm-6">
-                                <img src="img/about/about-2.jpg" alt="" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    </div>
-
-    );
-*/
-
-//classic
-/*
-    return (
-    <div>
-        <section className="home_banner_area">
-           	<div className="container box_1620">
-           		<div className="banner_inner d-flex align-items-center">
-					<div className="banner_content">
-						<div className="media">
-							<div className="d-flex">
-								<img height='480' src={this.props.obj.phurl} alt='profile' />
-							</div>
-							<div className="media-body">
-								<div className="personal_text">
-									<h6>В клубе с {this.props.obj.since} г.</h6>
-									<h3>{this.props.obj.name}</h3>
-									<h4>{real_name}</h4>
-									<p>{sports}</p>
-									<ul className="list basic_info">
-										<li><i className="lnr lnr-calendar-full"></i> {yob} г.р.</li>
-										<li><i className="lnr lnr-phone-handset"></i> {phone}</li>
-										<li><i className="lnr lnr-envelope"></i> {email}</li>
-										<li><i className="lnr lnr-home"></i> {metro}</li>
-									</ul>
-									<ul className="list personal_social">
-										<li><i className="fa fa-facebook"></i></li>
-										<li><i className="fa fa-twitter"></i></li>
-										<li><i className="fa fa-linkedin"></i></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-            </div>
-        </section>
-        <section className="welcome_area pad_bt">
-        	<div className="container">
-        		<div className="row welcome_inner">
-        			<div className="col-lg-6">
-        				<div className="welcome_text">
-        					<h4>Клубная Статистика</h4>
-        					<p><div>основная ракета: <span style={{fontWeight:'bold'}}>{raquet}</span></div>
-						<div>уровень самооценки: <span style={{fontWeight:'bold'}}>{this.props.obj.level}</span></div>
-						<div>последний раз на сайте: <span style={{fontStyle:'italic'}}>{this.props.obj.last_seen}</span></div></p>
-						<p>{o_sebe}</p>
-        					<div className="row">
-        						<div className="col-md-4">
-        							<div className="wel_item">
-        								<i className="lnr lnr-database"></i>
-        								<h4>{this.props.obj.num_matches}</h4>
-        								<p>матчей</p>
-        							</div>
-        						</div>
-        						<div className="col-md-4">
-        							<div className="wel_item">
-        								<i className="lnr lnr-book"></i>
-        								<h4>{this.props.obj.num_offers}</h4>
-        								<p>предложений</p>
-        							</div>
-        						</div>
-        						<div className="col-md-4">
-        							<div className="wel_item">
-        								<i className="lnr lnr-users"></i>
-        								<h4>{this.props.obj.num_comments}</h4>
-        								<p>комментариев</p>
-        							</div>
-        						</div>
-        					</div>
-        				</div>
-        			</div>
-        			<div className="col-lg-6">
-        				<div className="tools_expert">
-        					<div className="skill_main">
-								<div className="skill_item">
-									<h4>Одиночных: <span className="counter">{this.props.obj.num_singles}</span></h4>
-									<div className="progress_br">
-										<div className="progress">
-											<div className="progress-bar" role="progressbar" aria-valuenow={this.props.obj.num_singles} aria-valuemin="0" aria-valuemax={this.props.obj.num_matches}></div>
-										</div>
-									</div>
-								</div>
-								<div className="skill_item">
-									<h4>Парных: <span className="counter">{this.props.obj.num_doubles}</span></h4>
-									<div className="progress_br">
-										<div className="progress">
-											<div className="progress-bar" role="progressbar" aria-valuenow={this.props.obj.num_doubles} aria-valuemin="0" aria-valuemax={this.props.obj.num_matches}></div>
-										</div>
-									</div>
-								</div>
-								<div className="skill_item">
-									<h4>Побед: <span className="counter">{this.props.obj.num_victories}</span></h4>
-									<div className="progress_br">
-										<div className="progress">
-											<div className="progress-bar" role="progressbar" aria-valuenow={this.props.obj.num_victories} aria-valuemin="0" aria-valuemax={this.props.obj.num_matches}></div>
-										</div>
-									</div>
-								</div>
-								<div className="skill_item">
-									<h4>Ничьих (= незаконченных): <span className="counter">{this.props.obj.num_draws}</span></h4>
-									<div className="progress_br">
-										<div className="progress">
-											<div className="progress-bar" role="progressbar" aria-valuenow={this.props.obj.num_draws} aria-valuemin="0" aria-valuemax={this.props.obj.num_matches}></div>
-										</div>
-									</div>
-								</div>
-								<div className="skill_item">
-									<h4>Поражений: <span className="counter">{this.props.obj.num_losses}</span></h4>
-									<div className="progress_br">
-										<div className="progress">
-											<div className="progress-bar" role="progressbar" aria-valuenow={this.props.obj.num_losses} aria-valuemin="0" aria-valuemax={this.props.obj.num_matches}></div>
-										</div>
-									</div>
-								</div>
-							</div>
-        				</div>
-        			</div>
-        		</div>
-        	</div>
-        </section>
-    </div>
-
-    );
-*/
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserCard)

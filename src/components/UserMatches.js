@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components'
 import {
   useTable,
@@ -11,12 +11,9 @@ import {
 } from 'react-table'
 
 import matchSorter from 'match-sorter'
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 
-import User from './User'
-import CustomizedDialogs from './CustomizedDialogs'
-
-import Link from '@material-ui/core/Link';
+//import Link from '@material-ui/core/Link';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -56,7 +53,7 @@ const Styles = styled.div`
   }
 
   .pagination {
-    padding: 0.5rem;
+    padding: 1rem;
   }
 `
 
@@ -172,7 +169,7 @@ function Table({ columns, data, updateMyData, skipReset }) {
       updateMyData,
       autoResetPage: !skipReset,
       autoResetSelectedRows: !skipReset,
-      initialState: { pageSize:20 },
+      initialState: { pageSize:10 },
     },
     useFilters,
     useGroupBy,
@@ -268,7 +265,7 @@ function Table({ columns, data, updateMyData, skipReset }) {
             )
           })}
         </tbody>
-      </table>на сайт <Link href="https://tennismatchmachine.com/cgi/ru/tclub">=></Link>
+      </table>
       { }
       <div className="pagination">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
@@ -360,64 +357,70 @@ const IndeterminateCheckbox = React.forwardRef(
   }
 )
 
-function Tableau() {
+function UserMatches(matches) {
 
   const [data, setData] = React.useState([]);
-  const [message, setMessage] = React.useState('...Loading...');
-  const [open, setOpen] = React.useState(false);
-  const [auth, setAuth] = React.useState(false);
-  const users = useSelector(state => state.users);
-  const unlock = useSelector(state => state.auth);
+
+//  const [auth, setAuth] = React.useState(false);
+//  const unlock = useSelector(state => state.auth);
   
   React.useEffect(() => {
     	getResponse();
-	checkAuth();
+//	checkAuth();
   });
 
 
   const getResponse = () => {
 
-    setData(users);
+    setData(matches.matches);
 
   }
 
-
+/*
   const checkAuth = () => {
 
     setAuth(unlock);
   
   }
-  
-  const callbackFunction = (childData) => {
-    setMessage(childData);
-  }
-  
-  const onUserClick = () => {
-     setMessage('');
-     setOpen(true);
-  } 
-    
+*/
+
+const active_player = matches.matches.player;
+
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Список игроков клуба Motivation',
+        Header: `SINGLES игрока ${active_player}`,
         columns: [
   
           {
-            Header: 'Имя',
-	    accessor: 'name',
-	   Cell: ({ cell: { value } }) => <div onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div>
-          },
-          {
-            Header: 'Уровень',
-            accessor: 'level',
+            Header: 'Дата матча',
+            accessor: 'date',
 
             aggregate: ['sum', 'uniqueCount'],
             Aggregated: ({ cell: { value } }) => `${value} уникальных`,
           },          
 	  {
-            Header: 'Ракета',
-            accessor: 'raquet',
+            Header: 'Кто',
+            accessor: 'winner',
+            Cell: ({ cell: { value } }) => {
+              return (
+	      <div className={ value === active_player ? 'gold' : value.slice(0, -1) === active_player ? '' : '' }>{value}</div>
+              );
+            },
+            
+	    filter: 'fuzzyText',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+	  {
+            Header: 'Против кого',
+            accessor: 'loser',
+            Cell: ({ cell: { value } }) => {
+              return (
+	      <div className={ value === active_player ? 'other' : value.slice(0, -1) === active_player ? '' : '' }>{value}</div>
+              );
+            },
 
             filter: 'fuzzyText',
 
@@ -425,42 +428,10 @@ function Tableau() {
             Aggregated: ({ cell: { value } }) => `${value} уникальных`,
           },
 	  {
-            Header: 'Метро',
-            accessor: 'metro',
+            Header: 'Счёт',
+            accessor: 'score',
 
             filter: 'fuzzyText',
-
-            aggregate: ['sum', 'uniqueCount'],
-            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
-          },
-	  {
-            Header: 'Год рождения',
-            accessor: 'yob',
-
-
-            aggregate: ['sum', 'uniqueCount'],
-            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
-          },
-	  {
-            Header: 'Начало карьеры',
-            accessor: 'yost',
-
-
-            aggregate: ['sum', 'uniqueCount'],
-            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
-          },
-	  {
-            Header: 'В клубе с',
-            accessor: 'since',
-
-
-            aggregate: ['sum', 'uniqueCount'],
-            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
-          },
-	  {
-            Header: 'Когда был(а)',
-            accessor: 'last_seen',
-
 
             aggregate: ['sum', 'uniqueCount'],
             Aggregated: ({ cell: { value } }) => `${value} уникальных`,
@@ -468,7 +439,7 @@ function Tableau() {
         ],
       },
     ],
-    []
+    [active_player]
   )
 
 
@@ -498,7 +469,6 @@ function Tableau() {
 
   return (
     <Styles>
-    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth}/>
     
      <Table
         columns={columns}
@@ -509,6 +479,4 @@ function Tableau() {
     </Styles>
   )
 }
-
-
-export default Tableau
+export default UserMatches;

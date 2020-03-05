@@ -9,7 +9,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import Grow from '@material-ui/core/Grow';
+import Fade from '@material-ui/core/Fade';
 //import Link from '@material-ui/core/Link';
 
 const styles = theme => ({
@@ -53,7 +53,7 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Grow direction="up" ref={ref} {...props} />;
+  return <Fade ref={ref} {...props} />;
 });
 
 ///////////////////
@@ -73,7 +73,7 @@ const CONTENT = this.props.content ? this.props.content : '.. передача �
       <Dialog fullScreen TransitionComponent={Transition} onClose={this.props.parentCallback} aria-labelledby="customized-dialog-title" open={this.props.open}>
         <DialogTitle id="customized-dialog-title" onClose={this.props.parentCallback}>
           <Button autoFocus onClick={this.props.parentCallback} color="primary">
-	  	 вернуться к списку
+	  	 вернуться к списку игроков
 	  </Button>
         </DialogTitle>
         <DialogContent dividers>

@@ -45,3 +45,27 @@ height:240px;
 display:table-cell; 
 vertical-align:middle;
 }
+
+.loading {
+opacity:0.5;
+}
+
+.show {
+display:table-cell; 
+vertical-align:middle;
+position:fixed;
+width:360px;
+margin:0 auto;
+}
+
+.hide {
+display:none;
+}
+
+.gold {
+background-color: #fed;
+}
+
+.other {
+background-color: #def;
+}
