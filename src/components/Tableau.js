@@ -172,7 +172,7 @@ function Table({ columns, data, updateMyData, skipReset }) {
       updateMyData,
       autoResetPage: !skipReset,
       autoResetSelectedRows: !skipReset,
-      initialState: { pageSize:20 },
+      initialState: { pageSize:15 },
     },
     useFilters,
     useGroupBy,
@@ -301,7 +301,7 @@ function Table({ columns, data, updateMyData, skipReset }) {
             setPageSize(Number(e.target.value))
           }}
         >
-          {[10, 20, 30, 40, 50].map(pageSize => (
+          {[10, 15, 20, 30, 50].map(pageSize => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
@@ -498,7 +498,7 @@ function Tableau() {
 
   return (
     <Styles>
-    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к списку игроков' player='Motivation'/>
+    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к списку' player='Motivation'/>
     
      <Table
         columns={columns}

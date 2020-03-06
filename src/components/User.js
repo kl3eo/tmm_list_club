@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import UserCard from './UserCard'
 import { connect } from 'react-redux'
+import baseURL from '../BaseURL'
 
 class User extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class User extends Component {
   }
 
   async getUserData(uname) {
-	await axios.get('/cgi/genc/tmm_api.pl?name='+uname, {withCredentials: true}, {responseType: 'json'})
+	await axios.get(baseURL + '/cgi/genc/tmm_api.pl?name='+uname, {withCredentials: true}, {responseType: 'json'})
             .then(response => { var obj = response.data[0];
 		this.props.dispatch({
           		type: 'CHECK_AUTH',

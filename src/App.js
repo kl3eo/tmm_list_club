@@ -2,11 +2,12 @@ import React from 'react'
 import './App.css'
 import Tableau from './components/Tableau'
 import { connect } from 'react-redux'
+import baseURL from './BaseURL'
 
 class App extends React.Component {
 
   componentDidMount() {
-    fetch('/cgi/genc/tmm_api.pl')
+    fetch(baseURL+'/cgi/genc/tmm_api.pl')
       .then(response => response.json())
       .then(json => {
         this.props.dispatch({

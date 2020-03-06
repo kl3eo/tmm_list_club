@@ -64,15 +64,14 @@ class CustomizedDialogs extends React.Component {
 
   render() {
 
-// вернуться к списку игроков
-//   const CONTENT = this.props.auth ? this.props.content ? this.props.content : '.. передача данных с' : 'для просмотра профилей войдите на сайт';
 const CONTENT = this.props.content ? this.props.content : '.. передача данных с';
 
    return (
     <div>
       <Dialog fullScreen TransitionComponent={Transition} onClose={this.props.parentCallback} aria-labelledby="customized-dialog-title" open={this.props.open}>
         <DialogTitle id="customized-dialog-title" onClose={this.props.parentCallback}>
-          <Button autoFocus onClick={this.props.parentCallback} color="primary">
+	
+          <Button autoFocus onClick={this.props.parentCallback} color="primary" style={{float:'right', marginRight:'50%'}}>
 	  	 <span style={{fontSize:'12px'}}>{this.props.button}</span> <span style={{fontWeight:'bold', marginLeft:'5px'}}>{this.props.player}</span>
 	  </Button>
         </DialogTitle>

@@ -7,7 +7,7 @@ import UserMatches from './UserMatches';
 import axios from 'axios';
 import { connect } from 'react-redux'
 import ImageFadeIn from 'react-image-fade-in';
-//import spinner from '../loading_spinner.gif'
+import baseURL from '../BaseURL'
 
 const style = {
   countup: {},
@@ -29,7 +29,7 @@ class UserCard extends Component {
   }
 
   async getUserMatches(uname) {this.setState(prevState => ({loading: !prevState.loading}));
-	await axios.get('/cgi/genc/tmm_api.pl?type=matches&name='+uname, {withCredentials: true}, {responseType: 'json'})
+	await axios.get(baseURL + '/cgi/genc/tmm_api.pl?type=matches&name='+uname, {withCredentials: true}, {responseType: 'json'})
             .then(response => { var matches = response.data; matches["player"]=uname;
 		this.props.dispatch({
           		type: 'CHECK_AUTH',
@@ -53,7 +53,8 @@ componentDidMount () {
 	}
 	loadScript('/js/jquery-3.3.1.min.js')
 	loadScript('/vendors/counter-up/jquery.waypoints.min.js')
-	loadScript('/js/theme.js')
+	loadScript('/js/theme.js');
+	//document.getElementById('active_user').innerHTML=this.props.obj.name
 }
 
   onVisibilityChange = isVisible => {
@@ -82,11 +83,12 @@ componentDidMount () {
   
     if (store.getState().auth) {
     return (
-
-    <div className={this.state.loading === false ? '' : 'loading'} >
-    <div className={this.state.loading === false ? 'hide' : 'show'} style={{ textAlign: 'center', color:'#369' }}>
-   	<h4>..загрузка </h4><h4>матчей..</h4>
+    <>
+    <div className={this.state.loading === false ? 'hide' : 'show'} style={{ textAlign: 'center', color:'#369', width:'100%' }}>
+   	<img src='/icon/loading_spinner.gif' alt='spinner'/>
     </div>
+    <div className={this.state.loading === false ? '' : 'loading'} >
+
            	<div className="container">
            		<div className="banner_inner d-flex align-items-center">
 					<div className="banner_content">
@@ -214,6 +216,7 @@ componentDidMount () {
             </div>
 
     </div>
+    </>
 
     ); //return
    } // if auth

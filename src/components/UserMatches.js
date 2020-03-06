@@ -19,11 +19,20 @@ import { useSelector } from "react-redux";
 
 const Styles = styled.div`
   padding: 1rem;
+  text-align:center;
+  
 
   table {
     border-spacing: 0;
     border: 1px solid black;
-
+    margin: 0 auto;
+    max-width:98%;
+    
+    thead {
+	text-align: left;
+	font-size:16px;
+    }
+    
     tr {
       :last-child {
         td {
@@ -56,6 +65,9 @@ const Styles = styled.div`
 
   .pagination {
     padding: 1rem;
+    margin: 0 auto;
+    max-width:80%;
+    text-align:center;
   }
 `
 
@@ -171,7 +183,7 @@ function Table({ columns, data, updateMyData, skipReset }) {
       updateMyData,
       autoResetPage: !skipReset,
       autoResetSelectedRows: !skipReset,
-      initialState: { pageSize:10 },
+      initialState: { pageSize:15 },
     },
     useFilters,
     useGroupBy,
@@ -401,7 +413,7 @@ const active_player = matches.matches.player;
   const columns = React.useMemo(
     () => [
       {
-        Header: `SINGLES игрока ${active_player}`,
+        Header: `МАТЧИ ${active_player}`,
         columns: [
   
           {
@@ -502,7 +514,7 @@ const active_player = matches.matches.player;
 
   return (
     <Styles>
-    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к матчам игрока' player={active_player}/>    
+    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к матчам' player={active_player}/>    
      <Table
         columns={columns}
         data={data}
