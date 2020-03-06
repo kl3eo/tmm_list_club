@@ -498,7 +498,7 @@ function Tableau() {
 
   return (
     <Styles>
-    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth}/>
+    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к списку игроков' player='Motivation'/>
     
      <Table
         columns={columns}

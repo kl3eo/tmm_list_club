@@ -9,6 +9,12 @@
   font-weight:normal;
 }
 
+.blu_div {
+  background: #bdf;
+}
+
+
+
 .abierto {
   display:block;
 }

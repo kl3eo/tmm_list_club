@@ -64,7 +64,7 @@ class CustomizedDialogs extends React.Component {
 
   render() {
 
-
+// вернуться к списку игроков
 //   const CONTENT = this.props.auth ? this.props.content ? this.props.content : '.. передача данных с' : 'для просмотра профилей войдите на сайт';
 const CONTENT = this.props.content ? this.props.content : '.. передача данных с';
 
@@ -73,7 +73,7 @@ const CONTENT = this.props.content ? this.props.content : '.. передача �
       <Dialog fullScreen TransitionComponent={Transition} onClose={this.props.parentCallback} aria-labelledby="customized-dialog-title" open={this.props.open}>
         <DialogTitle id="customized-dialog-title" onClose={this.props.parentCallback}>
           <Button autoFocus onClick={this.props.parentCallback} color="primary">
-	  	 вернуться к списку игроков
+	  	 <span style={{fontSize:'12px'}}>{this.props.button}</span> <span style={{fontWeight:'bold', marginLeft:'5px'}}>{this.props.player}</span>
 	  </Button>
         </DialogTitle>
         <DialogContent dividers>
@@ -93,48 +93,3 @@ const CONTENT = this.props.content ? this.props.content : '.. передача �
 }
 
 export default CustomizedDialogs;
-
-//////////////
-//Hooks - broken!!! don't know how yet
-/*
-export default function CustomizedDialogs(props) {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  
-  return (
-    <div>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Modal title
-        </DialogTitle>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-            in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-            lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </Typography>
-          <Typography gutterBottom>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-            scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-            auctor fringilla.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
-            Save changes
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
-}
-*/

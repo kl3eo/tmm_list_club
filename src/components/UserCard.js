@@ -77,13 +77,15 @@ componentDidMount () {
     const percent_wins = (parseInt(this.props.obj.num_victories)/parseInt(this.props.obj.num_matches))*100;
     const percent_losses = (parseInt(this.props.obj.num_losses)/parseInt(this.props.obj.num_matches))*100;
     const percent_draws = (parseInt(this.props.obj.num_draws)/parseInt(this.props.obj.num_matches))*100;
+    
+    const divClass = this.state.isHovered ? 'wel_item blu_div' : 'wel_item';
   
     if (store.getState().auth) {
     return (
 
     <div className={this.state.loading === false ? '' : 'loading'} >
     <div className={this.state.loading === false ? 'hide' : 'show'} style={{ textAlign: 'center', color:'#369' }}>
-   	<h4>..загрузка..</h4>
+   	<h4>..загрузка </h4><h4>матчей..</h4>
     </div>
            	<div className="container">
            		<div className="banner_inner d-flex align-items-center">
@@ -128,8 +130,8 @@ componentDidMount () {
 						<p>другие виды спорта: <span style={{fontWeight:'bold'}}>{sports}</span></p></div>
 						
         					<div className="row">
-        						<div className="col-md-4">
-        							<div className="wel_item" onClick={(e) => this.getUserMatches(this.props.obj.name,e)} style={{cursor:'pointer'}}>
+        						<div className="col-md-4" >
+        							<div className={divClass} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} onClick={(e) => this.getUserMatches(this.props.obj.name,e)} style={{cursor:'pointer'}}>
         								<i className="lnr lnr-database"></i>
         								<h4>{this.props.obj.num_matches}</h4>
         								<p>матчей</p>

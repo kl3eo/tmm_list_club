@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
+import CustomizedDialogs from './CustomizedDialogs'
+import User from './User'
 import {
   useTable,
   usePagination,
@@ -11,7 +13,7 @@ import {
 } from 'react-table'
 
 import matchSorter from 'match-sorter'
-//import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 //import Link from '@material-ui/core/Link';
 
@@ -298,7 +300,7 @@ function Table({ columns, data, updateMyData, skipReset }) {
             setPageSize(Number(e.target.value))
           }}
         >
-          {[10, 20, 30, 40, 50].map(pageSize => (
+          {[10, 15, 20, 30, 50].map(pageSize => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
@@ -360,13 +362,15 @@ const IndeterminateCheckbox = React.forwardRef(
 function UserMatches(matches) {
 
   const [data, setData] = React.useState([]);
-
-//  const [auth, setAuth] = React.useState(false);
-//  const unlock = useSelector(state => state.auth);
+  const [message, setMessage] = React.useState('...Loading...');
+  const [open, setOpen] = React.useState(false);
+  
+  const [auth, setAuth] = React.useState(false);
+  const unlock = useSelector(state => state.auth);
   
   React.useEffect(() => {
     	getResponse();
-//	checkAuth();
+	checkAuth();
   });
 
 
@@ -376,14 +380,22 @@ function UserMatches(matches) {
 
   }
 
-/*
+
   const checkAuth = () => {
 
     setAuth(unlock);
   
   }
-*/
 
+  const callbackFunction = (childData) => {
+    setMessage(childData);
+  }
+  
+  const onUserClick = () => {
+     setMessage('');
+     setOpen(true);
+  } 
+  
 const active_player = matches.matches.player;
 
   const columns = React.useMemo(
@@ -404,7 +416,7 @@ const active_player = matches.matches.player;
             accessor: 'winner',
             Cell: ({ cell: { value } }) => {
               return (
-	      <div className={ value === active_player ? 'gold' : value.slice(0, -1) === active_player ? '' : '' }>{value}</div>
+	      <div className={ value === active_player ? 'gold' : value && value.slice(0, -1) === active_player ? '' : '' }><div onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div></div>
               );
             },
             
@@ -418,7 +430,7 @@ const active_player = matches.matches.player;
             accessor: 'loser',
             Cell: ({ cell: { value } }) => {
               return (
-	      <div className={ value === active_player ? 'other' : value.slice(0, -1) === active_player ? '' : '' }>{value}</div>
+	      <div className={ value === active_player ? 'other' : value && value.slice(0, -1) === active_player ? '' : '' }><div onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div></div>
               );
             },
 
@@ -432,6 +444,27 @@ const active_player = matches.matches.player;
             accessor: 'score',
 
             filter: 'fuzzyText',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+          {
+            Header: 'Где',
+            accessor: 'address',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+          {
+            Header: 'Тип корта [Цена часа]',
+            accessor: 'court_type',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+          {
+            Header: 'Тип матча',
+            accessor: 'match_type',
 
             aggregate: ['sum', 'uniqueCount'],
             Aggregated: ({ cell: { value } }) => `${value} уникальных`,
@@ -469,7 +502,7 @@ const active_player = matches.matches.player;
 
   return (
     <Styles>
-    
+    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к матчам игрока' player={active_player}/>    
      <Table
         columns={columns}
         data={data}
