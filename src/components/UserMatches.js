@@ -183,7 +183,7 @@ function Table({ columns, data, updateMyData, skipReset }) {
       updateMyData,
       autoResetPage: !skipReset,
       autoResetSelectedRows: !skipReset,
-      initialState: { pageSize:15 },
+      initialState: { pageSize:10 },
     },
     useFilters,
     useGroupBy,
@@ -371,7 +371,7 @@ const IndeterminateCheckbox = React.forwardRef(
   }
 )
 
-function UserMatches(matches) {
+function UserSingles(matches) {
 
   const [data, setData] = React.useState([]);
   const [message, setMessage] = React.useState('...Loading...');
@@ -388,7 +388,7 @@ function UserMatches(matches) {
 
   const getResponse = () => {
 
-    setData(matches.matches);
+    setData(matches.matches[0].singles);
 
   }
 
@@ -413,7 +413,7 @@ const active_player = matches.matches.player;
   const columns = React.useMemo(
     () => [
       {
-        Header: `МАТЧИ ${active_player}`,
+        Header: `SINGLES ${active_player}`,
         columns: [
   
           {
@@ -432,7 +432,6 @@ const active_player = matches.matches.player;
               );
             },
             
-	    filter: 'fuzzyText',
 
             aggregate: ['sum', 'uniqueCount'],
             Aggregated: ({ cell: { value } }) => `${value} уникальных`,
@@ -446,7 +445,6 @@ const active_player = matches.matches.player;
               );
             },
 
-            filter: 'fuzzyText',
 
             aggregate: ['sum', 'uniqueCount'],
             Aggregated: ({ cell: { value } }) => `${value} уникальных`,
@@ -524,4 +522,158 @@ const active_player = matches.matches.player;
     </Styles>
   )
 }
-export default UserMatches;
+
+function UserDoubles(matches) {
+
+  const [data, setData] = React.useState([]);
+  const [message, setMessage] = React.useState('...Loading...');
+  const [open, setOpen] = React.useState(false);
+  
+  const [auth, setAuth] = React.useState(false);
+  const unlock = useSelector(state => state.auth);
+  
+  React.useEffect(() => {
+    	getResponse();
+	checkAuth();
+  });
+
+
+  const getResponse = () => {
+
+    setData(matches.matches[1].doubles);
+
+  }
+
+
+  const checkAuth = () => {
+
+    setAuth(unlock);
+  
+  }
+
+  const callbackFunction = (childData) => {
+    setMessage(childData);
+  }
+  
+  const onUserClick = () => {
+     setMessage('');
+     setOpen(true);
+  } 
+  
+const active_player = matches.matches.player;
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: `DOUBLES ${active_player}`,
+        columns: [
+  
+          {
+            Header: 'Дата матча',
+            accessor: 'date',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },          
+	  {
+            Header: 'Кто',
+            accessor: 'winner',
+            Cell: ({ cell: { value } }) => {
+	    	const vals = value.split('/');
+              return (
+	      <div className={ vals[0] === active_player || vals[1] === active_player ? 'gold' : '' }><div style={{display:'inline'}} onClick={onUserClick}><User name={vals[0]} parentCallback={callbackFunction} /><span style={{margin:'0 2px'}}>/</span><User name={vals[1]} parentCallback={callbackFunction} /></div></div>
+              );
+            },
+            
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+	  {
+            Header: 'Против кого',
+            accessor: 'loser',
+            Cell: ({ cell: { value } }) => {
+		const vals = value.split('/');
+              return (
+	      <div className={ vals[0] === active_player || vals[1] === active_player ? 'other' : '' }><div style={{display:'inline'}} onClick={onUserClick}><User name={vals[0]} parentCallback={callbackFunction} /><span style={{margin:'0 2px'}}>/</span><User name={vals[1]} parentCallback={callbackFunction} /></div></div>
+              );
+            },
+
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+	  {
+            Header: 'Счёт',
+            accessor: 'score',
+
+            filter: 'fuzzyText',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+          {
+            Header: 'Где',
+            accessor: 'address',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+          {
+            Header: 'Тип корта [Цена часа]',
+            accessor: 'court_type',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+          {
+            Header: 'Тип матча',
+            accessor: 'match_type',
+
+            aggregate: ['sum', 'uniqueCount'],
+            Aggregated: ({ cell: { value } }) => `${value} уникальных`,
+          },
+        ],
+      },
+    ],
+    [active_player]
+  )
+
+
+
+  const skipResetRef = React.useRef(false)
+
+  const updateMyData = (rowIndex, columnId, value) => {
+
+    skipResetRef.current = true
+    setData(old =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...row,
+            [columnId]: value,
+          }
+        }
+        return row
+      })
+    )
+  }
+
+  React.useEffect(() => {
+    skipResetRef.current = false
+  }, [data])
+
+
+  return (
+    <Styles>
+    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к матчам' player={active_player}/>    
+     <Table
+        columns={columns}
+        data={data}
+        updateMyData={updateMyData}
+        skipReset={skipResetRef.current}
+      />
+    </Styles>
+  )
+}
+export { UserSingles, UserDoubles };

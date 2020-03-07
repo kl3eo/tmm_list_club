@@ -83,3 +83,68 @@ CREATE OR REPLACE FUNCTION public.match_type(smallint)
  LANGUAGE sql
 AS $function$select description from tournir_info where tournir_id = $1
 $function$;
+
+------------------------
+---------------------- doubles
+
+CREATE OR REPLACE FUNCTION public.get_doubles_participant1(oid)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select participant1 from doubles where oid = $1
+$function$;
+
+CREATE OR REPLACE FUNCTION public.get_doubles_participant2(oid)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select participant2 from doubles where oid = $1
+$function$;
+
+CREATE OR REPLACE FUNCTION public.get_doubles_winner1(oid)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select participant1 from doubles where oid = $1 
+and winner='t'$function$;
+
+CREATE OR REPLACE FUNCTION public.get_doubles_loser1(oid)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select participant1 from doubles where oid = $1 
+and winner='f'$function$;
+
+CREATE OR REPLACE FUNCTION public.get_doubles_loser2(oid)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select participant2 from doubles where oid = $1 
+and winner='t'$function$;
+
+CREATE OR REPLACE FUNCTION public.get_doubles_winner2(oid)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select participant2 from doubles where oid = $1 
+and winner='f'$function$;
+
+CREATE OR REPLACE FUNCTION public.real_doubles_winner(oid)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select case when get_doubles_winner1($1) is null and get_doubles_loser1($1) is not null then get_doubles_winner2($1)
+else case when get_doubles_winner2($1) is null and get_doubles_loser2($1) is not null then get_doubles_winner1($1)
+else get_doubles_participant1($1) end end$function$;
+
+CREATE OR REPLACE FUNCTION public.real_doubles_loser(oid)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select case when get_doubles_winner1($1) is null and get_doubles_loser1($1) is not null then get_doubles_loser1($1)
+else case when get_doubles_winner2($1) is null and get_doubles_loser2($1) is not null then get_doubles_loser2($1)
+else get_doubles_participant2($1) end end$function$;
+
+CREATE OR REPLACE FUNCTION public.a_doubles_nknames(text, bool)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select array_to_string(ARRAY(select w_a_nkname(unnest(string_to_array($1,'/')), $2)),'/')
+$function$;
+
+CREATE OR REPLACE FUNCTION public.w_a_doubles_nknames(text, bool)
+ RETURNS text
+ LANGUAGE sql
+AS $function$select case when a_doubles_nknames($1, $2) is null then $1 else a_doubles_nknames($1, $2) end
+$function$;

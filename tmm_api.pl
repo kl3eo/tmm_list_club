@@ -108,20 +108,21 @@ FROM members$addon) a";
 } else { #type
 
 my $rest = '';my $prefix = '';
-	if ( defined($query->param('name')) && length($uname) && $type eq "matches" ) {
+	if ( defined($query->param('name')) && length($uname)) {
+		
 		$addon = ", matches where members.a_nkname = '$uname' and ((matches.participant1 = members.proj_code and matches.participant2 is not null and matches.participant2  != 'bye' and matches.score != 'w/o') 
-		or (matches.participant2 = proj_code  and matches.participant1 is not null and matches.participant1  != 'bye' and matches.score != 'w/o')) order by match_date desc";
+		or (matches.participant2 = members.proj_code and matches.participant1 is not null and matches.participant1 != 'bye' and matches.score != 'w/o')) order by match_date desc";
 		$rest = ", matches.score as score, matches.match_date as date, w_a_nkname(real_winner(matches.oid), matches.winner) as winner, w_a_nkname(real_loser(matches.oid), matches.winner) as loser, matches.winner as result,
 		courts_name(matches.court_location) as address, w_court_type(matches.court_type) as court_type, w_match_type(matches.tournir_id) as match_type ";
 		$prefix="matches.";
 		
 	}
+	
 $c = "SELECT ROW_TO_JSON(a) FROM (SELECT ".$prefix."oid as _id$rest
 FROM members$addon) a";
 }
-print STDERR $c."\n" 
-if ($debug)
-;
+
+print STDERR $c."\n" if ($debug);
 
 	my $r=$dbconn->prepare($c);
     	$r->execute;
@@ -129,12 +130,52 @@ if ($debug)
 	my $ls = $r->fetchall_arrayref; 
 	my $nt = $r->rows();
 
-print '[';	
-for (my $j = 0; $j < $nt; $j++) {
-	print ${${$ls}[$j]}[0];
-	print ',' unless ($j == $nt-1);
+unless (length($type)) { #users list
+
+	print '[';	
+	for (my $j = 0; $j < $nt; $j++) {
+		print ${${$ls}[$j]}[0];
+		print ',' unless ($j == $nt-1);
+	}
+	print ']';
+
+} else { #matches: singles, then doubles
+
+	print '[{"singles":[';	
+	for (my $j = 0; $j < $nt; $j++) {
+		print ${${$ls}[$j]}[0];
+		print ',' unless ($j == $nt-1);
+	}
+	print ']},{"doubles":[';
+
+	$rest = '';$prefix = '';
+	if ( defined($query->param('name')) && length($uname)) {
+	
+		$addon = ", doubles where members.a_nkname = '$uname' and ((members.proj_code = ANY (string_to_array(doubles.participant1,'/')) and doubles.participant2 is not null and doubles.participant2  != 'bye' and doubles.score != 'w/o') 
+		or (members.proj_code = ANY (string_to_array(doubles.participant2,'/')) and doubles.participant1 is not null and doubles.participant1 != 'bye' and doubles.score != 'w/o')) order by match_date desc";
+		$rest = ", doubles.score as score, doubles.match_date as date, w_a_doubles_nknames(real_doubles_winner(doubles.oid), doubles.winner) as winner, w_a_doubles_nknames(real_doubles_loser(doubles.oid), doubles.winner) as loser, doubles.winner as result,
+		courts_name(doubles.court_location) as address, w_court_type(doubles.court_type) as court_type, w_match_type(doubles.tournir_id) as match_type ";
+		$prefix="doubles.";
+	}
+	
+$c = "SELECT ROW_TO_JSON(a) FROM (SELECT ".$prefix."oid as _id$rest
+FROM members$addon) a";
+
+	print STDERR $c."\n" if ($debug);
+
+	my $r=$dbconn->prepare($c);
+    	$r->execute;
+	&dBaseError($r, $c."  (".$r->rows()." rows found)") if ($r->rows() == -2);
+	my $ls = $r->fetchall_arrayref; 
+	my $nt = $r->rows();
+
+	for (my $j = 0; $j < $nt; $j++) {
+		print ${${$ls}[$j]}[0];
+		print ',' unless ($j == $nt-1);
+	}
+	print ']}]';
+
 }
-print ']';
 
 $dbconn->disconnect;
 $query->delete_all;

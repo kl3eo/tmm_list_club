@@ -71,7 +71,7 @@ const CONTENT = this.props.content ? this.props.content : '.. передача �
       <Dialog fullScreen TransitionComponent={Transition} onClose={this.props.parentCallback} aria-labelledby="customized-dialog-title" open={this.props.open}>
         <DialogTitle id="customized-dialog-title" onClose={this.props.parentCallback}>
 	
-          <Button autoFocus onClick={this.props.parentCallback} color="primary" style={{float:'right', marginRight:'50%'}}>
+          <Button autoFocus onClick={this.props.parentCallback} color="primary" style={{float:'right', marginRight:'44%'}}>
 	  	 <span style={{fontSize:'12px'}}>{this.props.button}</span> <span style={{fontWeight:'bold', marginLeft:'5px'}}>{this.props.player}</span>
 	  </Button>
         </DialogTitle>

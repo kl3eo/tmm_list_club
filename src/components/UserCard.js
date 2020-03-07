@@ -3,7 +3,7 @@ import CountUp from 'react-countup';
 import VisibilitySensor from 'react-visibility-sensor';
 import Link from '@material-ui/core/Link';
 import store from '../store';
-import UserMatches from './UserMatches';
+import { UserSingles, UserDoubles } from './UserMatches';
 import axios from 'axios';
 import { connect } from 'react-redux'
 import ImageFadeIn from 'react-image-fade-in';
@@ -28,14 +28,14 @@ class UserCard extends Component {
     this.setState(prevState => ({isHovered: !prevState.isHovered}));
   }
 
-  async getUserMatches(uname) {this.setState(prevState => ({loading: !prevState.loading}));
-	await axios.get(baseURL + '/cgi/genc/tmm_api.pl?type=matches&name='+uname, {withCredentials: true}, {responseType: 'json'})
+  async getUserMatches(uname, type) {this.setState(prevState => ({loading: !prevState.loading}));
+	await axios.get(baseURL + '/cgi/genc/tmm_api.pl?type='+type+'&name='+uname, {withCredentials: true}, {responseType: 'json'})
             .then(response => { var matches = response.data; matches["player"]=uname;
 		this.props.dispatch({
           		type: 'CHECK_AUTH',
           		payload: matches === 'U' ? false : true
         	});this.setState(prevState => ({loading: !prevState.loading}));
-		this.props.parentCallback(<UserMatches matches={ matches }/>);
+		this.props.parentCallback(<><UserSingles matches={ matches }/><UserDoubles matches={ matches }/></>);
             })
             .catch(function (error){
                 console.log(error);
@@ -133,7 +133,7 @@ componentDidMount () {
 						
         					<div className="row">
         						<div className="col-md-4" >
-        							<div className={divClass} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} onClick={(e) => this.getUserMatches(this.props.obj.name,e)} style={{cursor:'pointer'}}>
+        							<div className={divClass} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} onClick={() => this.getUserMatches(this.props.obj.name,'matches')} style={{cursor:'pointer'}}>
         								<i className="lnr lnr-database"></i>
         								<h4>{this.props.obj.num_matches}</h4>
         								<p>матчей</p>
@@ -169,7 +169,7 @@ componentDidMount () {
 										</div>
 									</div>
 								</div>
-								<div className="skill_item">
+								<div className="skill_item" onClick={() => this.getUserMatches(this.props.obj.name,'doubles')} style={{cursor:'pointer'}}>
 									<h4>Парных: <span className="counter">
 									<VisibilitySensor onChange={this.onVisibilityChange} offset={{top:0}} delayedCall><CountUp className={style.countup} decimals={0} start={0} end={this.state.didViewCountUp ? this.props.obj.num_doubles : 0} suffix="" duration={3} /></VisibilitySensor>
 									</span></h4>
