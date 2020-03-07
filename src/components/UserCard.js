@@ -97,7 +97,7 @@ componentDidMount () {
 								 <ImageFadeIn opacityTransition={0.3} height='440' src={this.props.obj.phurl} alt='' style={{marginRight:'30px'}}/>
 							</div>
 							<div className="media-body">
-								<div className="personal_text" style={{margin:'20px 20px 20px 0px', textAlign:'left', float:'right'}}>
+								<div className="personal_text" style={{margin:'20px', textAlign:'left', float:'left'}}>
 									<h6>В клубе с {this.props.obj.since} г.</h6>
 									<h3>{this.props.obj.name}</h3>
 									<h4>{real_name}</h4>

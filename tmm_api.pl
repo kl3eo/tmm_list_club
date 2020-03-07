@@ -61,6 +61,12 @@ my $type = defined($query->param('type')) ? $query->param('type') : '';
 my $uid = defined($query->param('id')) ? $query->param('id') : 0;
 my $uname = defined($query->param('name')) ? $query->param('name') : '';
 
+if (length($type)) { # macthes come from faster server
+	$server = "81.25.50.12";
+	$user = "alex";
+	$passwd = "xxx";
+}
+
 print STDERR " Here nologin is $nologin!\n" if ($debug);
 
 if ( (length($uname) || $uid) && $nologin) {print "Unauthorized";exit;}
@@ -114,7 +120,7 @@ $c = "SELECT ROW_TO_JSON(a) FROM (SELECT ".$prefix."oid as _id$rest
 FROM members$addon) a";
 }
 print STDERR $c."\n" 
-#if ($debug)
+if ($debug)
 ;
 
 	my $r=$dbconn->prepare($c);

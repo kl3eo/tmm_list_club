@@ -428,7 +428,7 @@ const active_player = matches.matches.player;
             accessor: 'winner',
             Cell: ({ cell: { value } }) => {
               return (
-	      <div className={ value === active_player ? 'gold' : value && value.slice(0, -1) === active_player ? '' : '' }><div onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div></div>
+	      <div className={ value === active_player ? 'gold' : value && value.slice(0, -1) === active_player ? '' : '' }><div style={{display:'inline'}} onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div></div>
               );
             },
             
@@ -442,7 +442,7 @@ const active_player = matches.matches.player;
             accessor: 'loser',
             Cell: ({ cell: { value } }) => {
               return (
-	      <div className={ value === active_player ? 'other' : value && value.slice(0, -1) === active_player ? '' : '' }><div onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div></div>
+	      <div className={ value === active_player ? 'other' : value && value.slice(0, -1) === active_player ? '' : '' }><div style={{display:'inline'}} onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div></div>
               );
             },
 

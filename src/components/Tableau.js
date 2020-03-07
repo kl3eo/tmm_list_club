@@ -406,7 +406,7 @@ function Tableau() {
           {
             Header: 'Имя',
 	    accessor: 'name',
-	   Cell: ({ cell: { value } }) => <div onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div>
+	   Cell: ({ cell: { value } }) => <div style={{display:'inline'}} onClick={onUserClick}><User name={value} parentCallback={callbackFunction} /></div>
           },
           {
             Header: 'Уровень',
