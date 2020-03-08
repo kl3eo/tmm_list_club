@@ -268,7 +268,7 @@ function Table({ columns, data, updateMyData, skipReset }) {
             )
           })}
         </tbody>
-      </table>на сайт <Link href="https://tennismatchmachine.com/cgi/ru/tclub">=></Link>
+      </table>
       { }
       <div className="pagination">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
@@ -397,10 +397,12 @@ function Tableau() {
      setOpen(true);
   } 
     
+  const club = 'Motivation';
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Список игроков клуба Motivation',
+        Header: () => (<div>Список игроков клуба <Link href="https://tennismatchmachine.com/cgi/ru/tclub">{club}</Link></div>),
+	id:'bigheader',
         columns: [
   
           {
