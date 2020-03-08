@@ -49,7 +49,7 @@ if ($header) { print $header; } else {print $query->header('text/html; charset=u
 $nologin = 1 if ($r_user eq "visitatore");
 
 my $addr=$ENV{'REMOTE_ADDR'};
-$nologin = 0 if ($nologin && $addr eq "81.25.50.12");
+#$nologin = 0 if ($nologin && $addr eq "81.25.50.12");
 
 my $server = "127.0.0.1";
 my $user = $primary_user;

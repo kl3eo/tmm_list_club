@@ -27,6 +27,7 @@ class UserCard extends Component {
   toggleHover(){
     this.setState(prevState => ({isHovered: !prevState.isHovered}));
   }
+  
 
   async getUserMatches(uname, type) {this.setState(prevState => ({loading: !prevState.loading}));
 	await axios.get(baseURL + '/cgi/genc/tmm_api.pl?type='+type+'&name='+uname, {withCredentials: true}, {responseType: 'json'})
@@ -35,6 +36,7 @@ class UserCard extends Component {
           		type: 'CHECK_AUTH',
           		payload: matches === 'U' ? false : true
         	});this.setState(prevState => ({loading: !prevState.loading}));
+
 		this.props.parentCallback(<><UserSingles matches={ matches }/><UserDoubles matches={ matches }/></>);
             })
             .catch(function (error){
@@ -65,6 +67,9 @@ componentDidMount () {
   
   render(){
 
+//console.log("here",this.props.obj);      
+    if (store.getState().auth && typeof this.props.obj !== 'undefined') {
+    
     const o_sebe = this.props.obj.o_sebe === 'g_url' | this.props.obj.o_sebe === '' ? '-/-' : this.props.obj.o_sebe;
     const raquet = this.props.obj.raquet === '' ? '-/-' : this.props.obj.raquet;
     const email = this.props.obj.email === '' ? '-/-' : this.props.obj.email;
@@ -80,8 +85,7 @@ componentDidMount () {
     const percent_draws = (parseInt(this.props.obj.num_draws)/parseInt(this.props.obj.num_matches))*100;
     
     const divClass = this.state.isHovered ? 'wel_item blu_div' : 'wel_item';
-  
-    if (store.getState().auth) {
+        
     return (
     <>
     <div className={this.state.loading === false ? 'hide' : 'show'} style={{ textAlign: 'center', color:'#369', width:'100%' }}>
@@ -221,6 +225,9 @@ componentDidMount () {
     ); //return
    } // if auth
    else {
+   
+   if (typeof this.props.obj !== 'undefined') {
+   
     return (
     <div className="outer">
             <div className="inner">
@@ -231,6 +238,18 @@ componentDidMount () {
     </div>
 
     ); //return
+    } else {
+    return (
+    <div className="outer">
+            <div className="inner">
+
+						<h1>404 USER NOT FOUND</h1>
+
+            </div>
+    </div>
+
+    ); //return
+    }
    } // if auth
   } //render
 }; //class

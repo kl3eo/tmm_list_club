@@ -13,9 +13,10 @@ import {
 } from 'react-table'
 
 import matchSorter from 'match-sorter'
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 //import Link from '@material-ui/core/Link';
+import Button from '@material-ui/core/Button';
 
 const Styles = styled.div`
   padding: 1rem;
@@ -379,6 +380,9 @@ function UserSingles(matches) {
   
   const [auth, setAuth] = React.useState(false);
   const unlock = useSelector(state => state.auth);
+  const current_matches_type = useSelector(state => state.matches_type);
+
+  const dispatch = useDispatch();
   
   React.useEffect(() => {
     	getResponse();
@@ -511,8 +515,14 @@ const active_player = matches.matches.player;
 
 
   return (
-    <Styles>
+    <Styles style={{display: current_matches_type === 'singles' ? 'inline' : 'none'}}>
     <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к матчам' player={active_player}/>    
+    	<div style={{width:'100%',margin:'0 auto', textAlign:'center', paddingLeft:'20px'}}>
+	   <Button autoFocus disabled style={{float:'left', margin:'5px'}}>Singles</Button>
+	   <span style={{float:'left', margin:'5px'}}><img src='/icon/vec_raquet60_right.png' alt='raquets' width='48'/></span>
+	   <Button autoFocus color="primary" style={{float:'left', margin:'5px'}} onClick={() => dispatch({type: 'SELECT_MATCHES_TYPE', payload: 'doubles'})}>Doubles</Button>
+	   <div style={{clear:'left'}} />
+	</div>
      <Table
         columns={columns}
         data={data}
@@ -531,7 +541,10 @@ function UserDoubles(matches) {
   
   const [auth, setAuth] = React.useState(false);
   const unlock = useSelector(state => state.auth);
+  const current_matches_type = useSelector(state => state.matches_type);
   
+  const dispatch = useDispatch();
+    
   React.useEffect(() => {
     	getResponse();
 	checkAuth();
@@ -665,8 +678,14 @@ const active_player = matches.matches.player;
 
 
   return (
-    <Styles>
-    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к матчам' player={active_player}/>    
+    <Styles style={{display: current_matches_type === 'doubles' ? 'inline' : 'none'}}>
+    <CustomizedDialogs content={message} open={open} parentCallback={() => setOpen(false)} auth={auth} button='вернуться к матчам' player={active_player}/>  
+    	<div style={{width:'100%',margin:'0 auto', textAlign:'center', paddingLeft:'20px'}}>
+	   <Button autoFocus color="primary" style={{float:'left', margin:'5px'}} onClick={() => dispatch({type: 'SELECT_MATCHES_TYPE', payload: 'singles'})}>Singles</Button>
+	   <span style={{float:'left', margin:'5px'}}><img src='/icon/vec_raquet60_left.png' alt='raquets' width='48'/></span>
+	   <Button autoFocus disabled style={{float:'left', margin:'5px'}}>Doubles</Button>
+	   <div style={{clear:'left'}} />
+	</div>
      <Table
         columns={columns}
         data={data}
